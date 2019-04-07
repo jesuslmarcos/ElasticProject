@@ -98,3 +98,10 @@ services:
     image: docker.elastic.co/kibana/kibana:6.7.1
     volumes:
       - ./kibana.yml:/usr/share/kibana/config/kibana.yml
+
+Environment Variable      Kibana Setting
+SERVER_NAME               server.name
+KIBANA_DEFAULTAPPID       kibana.defaultAppId
+XPACK_MONITORING_ENABLED  xpack.monitoring.enabled
+
+
