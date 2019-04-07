@@ -4,4 +4,7 @@ services:
     image: docker.elastic.co/kibana/kibana:6.7.1
     volumes:
       - ./kibana.yml:/usr/share/kibana/config/kibana.yml
-      
+    environment:
+      SERVER_NAME: kibana.example.org
+      ELASTICSEARCH_HOSTS: http://elasticsearch.example.org      
+
