@@ -1,0 +1,7 @@
+version: '2'
+services:
+  kibana:
+    image: docker.elastic.co/kibana/kibana:6.7.1
+    volumes:
+      - ./kibana.yml:/usr/share/kibana/config/kibana.yml
+      
