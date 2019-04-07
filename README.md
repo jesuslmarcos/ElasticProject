@@ -83,3 +83,18 @@ If the logging driver has configurable options, you can set them in the daemon.j
   }
 }
 
+
+
+
+
+KIBANA
+docker pull docker.elastic.co/kibana/kibana:6.7.1
+
+kibana.yml
+
+version: '2'
+services:
+  kibana:
+    image: docker.elastic.co/kibana/kibana:6.7.1
+    volumes:
+      - ./kibana.yml:/usr/share/kibana/config/kibana.yml
