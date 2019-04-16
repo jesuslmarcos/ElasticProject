@@ -9,7 +9,8 @@ $ grep vm.max_map_count /etc/sysctl.conf
 vm.max_map_count=262144
 
 Docker ElasticSearch
-docker pull docker.elastic.co/elasticsearch/elasticsearch:6.7.1
+docker pull docker.elastic.co/elasticsearch/elasticsearch:7.0.0
+
 
 docker run -p 9200:9200 -p 9300:9300 -e "discovery.type=single-node" docker.elastic.co/elasticsearch/elasticsearch:6.7.1
 
