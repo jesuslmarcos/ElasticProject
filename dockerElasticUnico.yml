@@ -34,8 +34,6 @@ services:
         hard: -1
     volumes:
       - esdata02:/home/suso/DockerWorking/ES/data
-    ports:
-      - 9200:9200
     networks:
       - esnet
   es03:
@@ -53,8 +51,6 @@ services:
         hard: -1
     volumes:
       - esdata03:/home/suso/DockerWorking/ES/data
-    ports:
-      - 9200:9200
     networks:
       - esnet
 
