@@ -6,4 +6,4 @@ services:
       - /home/suso/DockerWorking/ES/data/kibana.yml
     environment:
       SERVER_NAME: localhost
-      ELASTICSEARCH_HOSTS: http://elasticsearch:9200
+      ELASTICSEARCH_HOSTS: http://localhost:9200
