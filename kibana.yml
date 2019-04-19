@@ -1,10 +1,9 @@
 version: '2'
 services:
   kibana:
-    image: docker.elastic.co/kibana/kibana:6.7.1
+    image: docker.elastic.co/kibana/kibana:7.0.0
     volumes:
-      - ./kibana.yml:/usr/share/kibana/config/kibana.yml
+      - /home/suso/DockerWorking/ES/data/kibana.yml
     environment:
-      SERVER_NAME: kibana.example.org
-      ELASTICSEARCH_HOSTS: http://elasticsearch.example.org      
-
+      SERVER_NAME: localhost
+      ELASTICSEARCH_HOSTS: http://elasticsearch:9200
