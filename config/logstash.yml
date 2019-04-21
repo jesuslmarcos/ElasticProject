@@ -1,0 +1,8 @@
+node.name: logstash-01
+http.host: "0.0.0.0"
+http.port: 9600-9700
+path.config: /usr/share/logstash/pipeline
+xpack.monitoring.enabled: true
+xpack.monitoring.elasticsearch.hosts: ["http://elasticsearch1:9200/"]
+xpack.monitoring.collection.interval: 10s
+xpack.monitoring.collection.pipeline.details.enabled: true

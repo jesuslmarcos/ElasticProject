@@ -1,65 +1,298 @@
-version: '2.2'
+version: '3.7'
 services:
+
+############################# ElasticSearch 7.0.0 #############################
+
   elasticsearch:
-    image: docker.elastic.co/elasticsearch/elasticsearch:6.7.1
-    container_name: workeres01
+    image: docker.elastic.co/elasticsearch/elasticsearch:7.0.0
+    container_name: elasticsearch1
+    secrets:
+      - source: elasticsearch.yml
+        target: /usr/share/elasticsearch/config/elasticsearch.yml
     environment:
-      - cluster.name=docker-cluster01
+      - node.name=elasticsearch1
+      - cluster.name=docker-cluster
+      - cluster.initial_master_nodes=elasticsearch1
       - bootstrap.memory_lock=true
-      - "ES_JAVA_OPTS=-Xms4096m -Xmx4096m"
+      - "ES_JAVA_OPTS=-Xms256M -Xmx256M"
+      - http.cors.enabled=true
+      - http.cors.allow-origin=*
+      - network.host=_eth0_
     ulimits:
+      nproc: 65535
       memlock:
         soft: -1
         hard: -1
+      nofile:
+        soft: 65536
+        hard: 65536
+    cap_add:
+      - ALL
+    # privileged: true
+    deploy:
+      replicas: 1
+      update_config:
+        parallelism: 1
+        delay: 10s
+      resources:
+        limits:
+          cpus: '1'
+          memory: 256M
+        reservations:
+          cpus: '1'
+          memory: 256M
+      restart_policy:
+        condition: on-failure
+        delay: 5s
+        max_attempts: 3
+        window: 10s
     volumes:
-      - esdata01:/usr/share/elasticsearch/data
+      - type: volume
+        source: logs
+        target: /var/log
+      - type: volume
+        source: esdata1
+        target: /usr/share/elasticsearch/data
+    networks:
+      - elastic
+      - ingress
     ports:
       - 9200:9200
-    networks:
-      - esnet
+      - 9300:9300
+
+
+
+
   elasticsearch2:
-    image: docker.elastic.co/elasticsearch/elasticsearch:6.7.1
-    container_name: workeres01
+    image: docker.elastic.co/elasticsearch/elasticsearch:7.0.0
+    container_name: elasticsearch2
+    secrets:
+      - source: elasticsearch.yml
+        target: /usr/share/elasticsearch/config/elasticsearch.yml
     environment:
-      - cluster.name=docker-cluster01
+      - node.name=elasticsearch2
+      - cluster.name=docker-cluster
+      - cluster.initial_master_nodes=elasticsearch1
       - bootstrap.memory_lock=true
-      - "ES_JAVA_OPTS=-Xms4096m -Xmx4096m"
-      - "discovery.zen.ping.unicast.hosts=elasticsearch"
+      - "ES_JAVA_OPTS=-Xms256M -Xmx256M"
+      - "discovery.zen.ping.unicast.hosts=elasticsearch1"
+      - http.cors.enabled=true
+      - http.cors.allow-origin=*
+      - network.host=_eth0_
     ulimits:
+      nproc: 65535
       memlock:
         soft: -1
         hard: -1
+      nofile:
+        soft: 65536
+        hard: 65536
+    cap_add:
+      - ALL
+    # privileged: true
+    deploy:
+      replicas: 1
+      update_config:
+        parallelism: 1
+        delay: 10s
+      resources:
+        limits:
+          cpus: '1'
+          memory: 256M
+        reservations:
+          cpus: '1'
+          memory: 256M
+      restart_policy:
+        condition: on-failure
+        delay: 5s
+        max_attempts: 3
+        window: 10s
     volumes:
-      - esdata02:/usr/share/elasticsearch/data
+      - type: volume
+        source: logs
+        target: /var/log
+      - type: volume
+        source: esdata2
+        target: /usr/share/elasticsearch/data
     networks:
-      - esnet
+      - elastic
+      - ingress
+    ports:
+      - 9201:9200
+
+
+
+
+
+
 
   elasticsearch3:
-    image: docker.elastic.co/elasticsearch/elasticsearch:6.7.1
-    container_name: workeres03
+    image: docker.elastic.co/elasticsearch/elasticsearch:7.0.0
+    container_name: elasticsearch3
+    secrets:
+      - source: elasticsearch.yml
+        target: /usr/share/elasticsearch/config/elasticsearch.yml
     environment:
-      - cluster.name=docker-cluster01
+      - node.name=elasticsearch3
+      - cluster.name=docker-cluster
+      - cluster.initial_master_nodes=elasticsearch1
       - bootstrap.memory_lock=true
-      - "ES_JAVA_OPTS=-Xms4096m -Xmx4096m"
-      - "discovery.zen.ping.unicast.hosts=elasticsearch"
+      - "ES_JAVA_OPTS=-Xms256M -Xmx256M"
+      - "discovery.zen.ping.unicast.hosts=elasticsearch1"
+      - http.cors.enabled=true
+      - http.cors.allow-origin=*
+      - network.host=_eth0_
     ulimits:
+      nproc: 65535
       memlock:
         soft: -1
         hard: -1
+      nofile:
+        soft: 65536
+        hard: 65536
+    cap_add:
+      - ALL
+    # privileged: true
+    deploy:
+      replicas: 1
+      update_config:
+        parallelism: 1
+        delay: 10s
+      resources:
+        limits:
+          cpus: '1'
+          memory: 256M
+        reservations:
+          cpus: '1'
+          memory: 256M
+      restart_policy:
+        condition: on-failure
+        delay: 5s
+        max_attempts: 3
+        window: 10s
     volumes:
-      - esdata03:/usr/share/elasticsearch/data
+      - type: volume
+        source: logs
+        target: /var/log
+      - type: volume
+        source: esdata3
+        target: /usr/share/elasticsearch/data
     networks:
-      - esnet
+      - elastic
+      - ingress
+    ports:
+      - 9202:9200
+
+
+############################# Kibana 7.0.0 #############################
+
+
+  kibana:
+    image: docker.elastic.co/kibana/kibana:7.0.0
+    container_name: kibana
+    environment:
+      SERVER_NAME: localhost
+      ELASTICSEARCH_URL: http://elasticsearch1:9200/
+    ports:
+      - 5601:5601
+    volumes:
+      - type: volume
+        source: logs
+        target: /var/log
+    ulimits:
+      nproc: 65535
+      memlock:
+        soft: -1
+        hard: -1
+    cap_add:
+      - ALL
+    deploy:
+      replicas: 1
+      update_config:
+        parallelism: 1
+        delay: 10s
+      resources:
+        limits:
+          cpus: '1'
+          memory: 256M
+        reservations:
+          cpus: '1'
+          memory: 256M
+      restart_policy:
+        condition: on-failure
+        delay: 30s
+        max_attempts: 3
+        window: 120s
+    networks:
+      - elastic
+      - ingress
+
+
+############################# Logstash 7.0.0 #############################
+
+  logstash:
+    image: docker.elastic.co/logstash/logstash:7.0.0
+    container_name: logstash
+    secrets:
+      - source: logstash.conf
+        target: /usr/share/logstash/pipeline/logstash.conf
+      - source: logstash.yml
+        target: /usr/share/logstash/config/logstash.yml
+    environment:
+      - "LS_JAVA_OPTS=-Xms1g -Xmx1g"
+    ulimits: 
+      nproc: 65535
+      memlock:
+        soft: -1
+        hard: -1
+      depends_on:
+        - elasticshare:
+          condition: service_healthy
+    ports:
+      - 5044:5044
+      - 9600:9600
+    networks: 
+      - elastic
+    healthcheck:
+      test: bin/logstash -t
+      interval: 60s
+      timeout: 50s
+      retries: 5      
+
 
 
 volumes:
-  esdata01:
-    driver: local
-  esdata02:
-    driver: local
-  esdata03:
-    driver: local
+  esdata1:
+  esdata2:
+  esdata3:
+  logs:
 
 networks:
-  esnet:
-  
+  elastic:
+  ingress:
+
+############################# Secrets #############################
+
+secrets:
+    elasticsearch.yml:
+      file: ./config/elasticsearch.yml
+    kibana.yml:
+      file: ./config/kibana.yml
+    logstash.conf:
+      file: ./config/pipeline/logstash.conf
+    logstash.yml:
+      file: ./config/logstash.yml
+
+
+
+# configs:
+#   auditbeat_config:
+#     file: configs/auditbeat.docker.yml
+#   filebeat_config:
+#     file: configs/filebeat.docker.yml
+#   heartbeat_config:
+#     file: configs/heartbeat.docker.yml
+#   metricbeat_config:
+#     file: configs/metricbeat.docker.yml
+#   packetbeat_config:
+#     file: configs/packetbeat.docker.yml
